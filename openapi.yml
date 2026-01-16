@@ -1,0 +1,158 @@
+# openapi.yaml (updated)
+
+openapi: 3.1.0
+info:
+  title: Meeting Room Booking API
+  version: 1.1.0
+  description: |
+    Simple in-memory API for booking meeting rooms.
+
+servers:
+  - url: http://localhost:3000
+
+paths:
+  /rooms/{roomId}/bookings:
+    post:
+      summary: Create a booking
+      operationId: createBooking
+      parameters:
+        - name: roomId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBookingRequest'
+      responses:
+        '201':
+          description: Booking created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Booking conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    get:
+      summary: List bookings for a room
+      operationId: listBookings
+      parameters:
+        - name: roomId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of bookings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+
+  /rooms/{roomId}/bookings/{bookingId}:
+    delete:
+      summary: Cancel a booking
+      description: Delete an existing booking and return deletion metadata.
+      operationId: cancelBooking
+      parameters:
+        - name: roomId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: bookingId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Booking deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingDeletionResult'
+        '404':
+          description: Booking not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    CreateBookingRequest:
+      type: object
+      required:
+        - startTime
+        - endTime
+      properties:
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+
+    Booking:
+      type: object
+      required:
+        - id
+        - roomId
+        - startTime
+        - endTime
+        - createdAt
+      properties:
+        id:
+          type: string
+        roomId:
+          type: string
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+
+    BookingDeletionResult:
+      type: object
+      required:
+        - id
+        - deletedAt
+      properties:
+        id:
+          type: string
+        deletedAt:
+          type: string
+          format: date-time
+
+    ErrorResponse:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+        message:
+          type: string
