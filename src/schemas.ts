@@ -4,7 +4,7 @@ const isoDateTimeRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z$/;
 
 export const IsoDateTimeString = v.pipe(
   v.string(),
-  v.minLength(1),
+  v.nonEmpty(),
   v.regex(isoDateTimeRegex, "Invalid ISO 8601 date-time"),
 );
 
