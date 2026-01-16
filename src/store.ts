@@ -1,24 +1,19 @@
-// src/store.ts
-import { randomUUID } from 'crypto'
+import { randomUUID } from "crypto";
+import type { BookingDeletionResult } from "./schemas";
 
 export type Booking = {
-  id: string
-  roomId: string
-  startTime: string
-  endTime: string
-  createdAt: string
-}
+  id: string;
+  roomId: string;
+  startTime: string;
+  endTime: string;
+  createdAt: string;
+};
 
-export type BookingDeletionResult = {
-  id: string
-  deletedAt: string
-}
-
-const bookingsByRoom = new Map<string, Booking[]>()
+const bookingsByRoom = new Map<string, Booking[]>();
 
 export const bookingStore = {
   list(roomId: string): Booking[] {
-    return bookingsByRoom.get(roomId) ?? []
+    return bookingsByRoom.get(roomId) ?? [];
   },
 
   create(roomId: string, startTime: string, endTime: string): Booking {
@@ -28,27 +23,27 @@ export const bookingStore = {
       startTime,
       endTime,
       createdAt: new Date().toISOString(),
-    }
+    };
 
-    const bookings = bookingsByRoom.get(roomId) ?? []
-    bookings.push(booking)
-    bookingsByRoom.set(roomId, bookings)
+    const bookings = bookingsByRoom.get(roomId) ?? [];
+    bookings.push(booking);
+    bookingsByRoom.set(roomId, bookings);
 
-    return booking
+    return booking;
   },
 
   delete(roomId: string, bookingId: string): BookingDeletionResult | null {
-    const bookings = bookingsByRoom.get(roomId)
-    if (!bookings) return null
+    const bookings = bookingsByRoom.get(roomId);
+    if (!bookings) return null;
 
-    const index = bookings.findIndex((b) => b.id === bookingId)
-    if (index === -1) return null
+    const index = bookings.findIndex((b) => b.id === bookingId);
+    if (index === -1) return null;
 
-    bookings.splice(index, 1)
+    bookings.splice(index, 1);
 
     return {
       id: bookingId,
       deletedAt: new Date().toISOString(),
-    }
+    };
   },
-}
+};

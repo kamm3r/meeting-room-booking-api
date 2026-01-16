@@ -1,9 +1,8 @@
-// src/index.ts
-import { Hono } from 'hono'
-import rooms from './rooms'
+import { Hono } from "hono";
+import rooms from "./rooms";
 
-const app = new Hono()
+const app = new Hono();
 
-app.route('/rooms', rooms)
+app.route("/rooms", rooms);
 
-export default app
+export default app;
